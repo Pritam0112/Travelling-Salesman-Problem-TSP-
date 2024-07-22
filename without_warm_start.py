@@ -23,12 +23,10 @@ def calculate_distance_matrix(coordinates):
 
 
 def build_model(places, distance_matrix):
-    # instantiate the problem - Python PuLP model
+
     prob = pulp.LpProblem("TSP", pulp.LpMinimize)
 
-    # ***************************************************
-    #   Defining decision variables
-    # ***************************************************
+
     x = {}  # Binary: x_i,j:= 1 if I am visiting city j after city i; otherwise 0
     for i in places:
         for j in places:
@@ -103,7 +101,7 @@ def solve_tsp(prob, x, places):
                     current_place = next_place
                     break
 
-        optimal_route.append(optimal_route[0])  # Return to the starting place
+        optimal_route.append(optimal_route[0])
 
         total_distance = pulp.value(prob.objective)
 
@@ -117,11 +115,9 @@ def solve_tsp(prob, x, places):
 
 
 def plot_route(optimal_route, coordinates, places):
-    # Create a map centered around the first place
     start_coord = coordinates[places.index(optimal_route[0])]
     m = folium.Map(location=start_coord, zoom_start=6)
 
-    # Add markers for each place with tooltips
     for idx in optimal_route:
         folium.Marker(
             location=coordinates[places.index(idx)],
@@ -141,7 +137,7 @@ def plot_route(optimal_route, coordinates, places):
 
 if __name__ == "__main__":
     data_file_path = 'Data/tsp_input.csv'
-    places, coordinates = read_data(data_file_path, nrows=100)  # change number of places (nrows) according to model
+    places, coordinates = read_data(data_file_path, nrows=100)
     distance_matrix = calculate_distance_matrix(coordinates)
     problem, x = build_model(places, distance_matrix)
     optimal_route, total_distance = solve_tsp(problem, x, places)
